@@ -97,12 +97,14 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	 */
 	public function handleWebhook(array $payload): void
 	{
+
+		error_log('webhook works.............');
 		$status = $payload['data']['status'] ?? null;
 		$reference = $payload['data']['reference'] ?? null;
 
 		if (!$status || !$reference) {
 			return;
-		}
+		};
 
 		// 1. Find GiveWP payment using stored reference
 		$payments = give_get_payments([
@@ -306,13 +308,6 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 				'type'  => 'title',
 			];
 
-			//$new_settings[] = [
-			//	'id'      => 'monime_enabled',
-			//	'name'    => __('Enable Monime', 'monime-gateway'),
-			//	'desc'    => __('Enable Monime donation gateway.', 'monime-gateway'),
-			///	'type'    => 'checkbox',
-			//	'default' => 'enabled',
-			//];
 
 			$new_settings[] = [
 				'id'      => 'monime_title',
@@ -737,23 +732,24 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 		if (give_get_option('monime_financial_account')) {
 			$data['financialAccountId'] = give_get_option('monime_financial_account');
 		}
-			$data['paymentOptions'] = self::getPaymentOptionsPayload();
-			try {
-				$response = PaymentService::create(
-					adaptorid: $this->getAdapterId(),
-					payload: $data
-				);
-			} catch (\Throwable $e) {
-				throw new \Exception(
-					'Monime checkout initialization failed.'
-				);
-			}		// Store local identifiers before sending the donor offsite.
-			$donation->gatewayTransactionId = $reference;
-			$donation->save();
-			update_post_meta($donation->id, '_monime_reference', $reference);
-			update_post_meta($donation->id, '_monime_redirect_url', $response['redirectUrl']);
-			return new RedirectOffsite($response['redirectUrl']);
-		}
+		$data['paymentOptions'] = self::getPaymentOptionsPayload();
+		try {
+			$response = PaymentService::create(
+				adaptorid: $this->getAdapterId(),
+				payload: $data
+			);
+			error_log(print_r($response, true));
+		} catch (\Throwable $e) {
+			throw new \Exception(
+				'Monime checkout initialization failed.'
+			);
+		}		// Store local identifiers before sending the donor offsite.
+		$donation->gatewayTransactionId = $reference;
+		$donation->save();
+		update_post_meta($donation->id, '_monime_reference', $reference);
+		update_post_meta($donation->id, '_monime_redirect_url', $response['redirectUrl']);
+		return new RedirectOffsite($response['redirectUrl']);
+	}
 
 
 
@@ -764,7 +760,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	 */
 	protected function handleCreatePaymentRedirect(array $queryParams)
 	{
-			/*
+		/*
 	|--------------------------------------------------------------------------
 	| Compact Query Params
 	|--------------------------------------------------------------------------
@@ -795,11 +791,11 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	|--------------------------------------------------------------------------
 	*/
 
-			if (empty($reference)) {
-				return new RedirectResponse(
-					$failedUrl
-				);
-			}
+		if (empty($reference)) {
+			return new RedirectResponse(
+				$failedUrl
+			);
+		}
 
 		/*
 	|--------------------------------------------------------------------------
@@ -813,19 +809,19 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 			'number'     => 1,
 		]);
 
-			if (empty($payments)) {
-				return new RedirectResponse(
-					$failedUrl
-				);
-			}
+		if (empty($payments)) {
+			return new RedirectResponse(
+				$failedUrl
+			);
+		}
 
 		$payment_id = (int) $payments[0]->ID;
 
-			$current_status = give_get_payment_status(
-				$payment_id
-			);
+		$current_status = give_get_payment_status(
+			$payment_id
+		);
 
-			/*
+		/*
 	|--------------------------------------------------------------------------
 	| Cancelled / Failed
 	|--------------------------------------------------------------------------
@@ -835,7 +831,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 
 			// Never overwrite completed donations
 			if ($current_status !== 'publish') {
-
+				error_log('x.....not publish ==fail');
 				give_update_payment_status(
 					$payment_id,
 					'failed',
@@ -854,17 +850,17 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 					'cancelled'
 				);
 
-					give_update_payment_meta(
-						$payment_id,
-						'_monime_cancelled_at',
-						current_time('mysql')
-					);
+				give_update_payment_meta(
+					$payment_id,
+					'_monime_cancelled_at',
+					current_time('mysql')
+				);
 
-					give_insert_payment_note(
-						$payment_id,
-						'Monime checkout cancelled by donor.'
-					);
-				}
+				give_insert_payment_note(
+					$payment_id,
+					'Monime checkout cancelled by donor.'
+				);
+			}
 
 			return new RedirectResponse(
 				$failedUrl
@@ -878,7 +874,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	*/
 
 		if ($current_status !== 'publish') {
-
+			error_log('o..... publish ==success');
 			give_update_payment_status(
 				$payment_id,
 				'publish',
@@ -897,17 +893,17 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 				'completed'
 			);
 
-				give_update_payment_meta(
-					$payment_id,
-					'_monime_completed_at',
-					current_time('mysql')
-				);
+			give_update_payment_meta(
+				$payment_id,
+				'_monime_completed_at',
+				current_time('mysql')
+			);
 
-				give_insert_payment_note(
-					$payment_id,
-					'Monime redirect marked donation as completed.'
-				);
-			}
+			give_insert_payment_note(
+				$payment_id,
+				'Monime redirect marked donation as completed.'
+			);
+		}
 
 		return new RedirectResponse(
 			$successUrl

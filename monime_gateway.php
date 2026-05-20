@@ -37,13 +37,13 @@ $core_files = [
 	'src/Monime/admin_pages/SettingsPage.php',
 ];
 
-	foreach ($core_files as $file) {
-		$path = MONIME_PLUGIN_DIR . $file;
-		if (file_exists($path)) {
-			require_once $path;
-		} else {
-		}
+foreach ($core_files as $file) {
+	$path = MONIME_PLUGIN_DIR . $file;
+	if (file_exists($path)) {
+		require_once $path;
+	} else {
 	}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -84,18 +84,18 @@ add_action('plugins_loaded', function () {
 			'src/adaptors/givewp/GivewpAdapter.php',
 		];
 
-			foreach ($give_files as $file) {
+		foreach ($give_files as $file) {
 
-				$path = MONIME_PLUGIN_DIR . $file;
+			$path = MONIME_PLUGIN_DIR . $file;
 
-				if (file_exists($path)) {
-					require_once $path;
-				} else {
-				}
+			if (file_exists($path)) {
+				require_once $path;
+			} else {
 			}
-
-			GivewpAdapter::boot();
 		}
+
+		GivewpAdapter::boot();
+	}
 
 	// WooCommerce Integration
 	if (class_exists('WooCommerce') || function_exists('WC')) {
@@ -123,4 +123,4 @@ add_action('plugins_loaded', function () {
 	if (class_exists(Webhook::class)) {
 		Webhook::init();
 	}
-	});
+});

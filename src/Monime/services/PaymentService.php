@@ -19,6 +19,7 @@ class PaymentService
 		// Resolve the adapter that knows how to translate this platform payload.
 		$adaptor = AdapterRegistry::get($adaptorid);
 		if (!$adaptor) {
+			error_log('adapter not found');
 			return [
 				'message' => 'Adapter not found'
 			];
@@ -35,8 +36,10 @@ class PaymentService
 			$env['monime_token'],
 			$env['monime_space_id']
 		);
+		error_log(print_r($data, true));
 		// Pass the adapter ID so Monime webhooks can be routed back correctly.
 		$response = $client->create_checkout_session(donationrequest: $data, _handler: $adaptorid);
+		error_log(print_r($response, true));
 		return $response;
 	}
 }

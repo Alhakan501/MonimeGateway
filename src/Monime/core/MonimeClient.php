@@ -133,6 +133,7 @@ class MonimeClient
 		}
 
 		$result = $parsed['result'] ?? $parsed;
+		$redirectUrl = $result['redirectUrl'] ?? null;
 		// A checkout session is unusable without the hosted checkout URL.
 		if (empty($redirectUrl)) {
 			throw new \RuntimeException('Invalid Redirect Url. Response: ' . json_encode($parsed));

@@ -34,7 +34,6 @@ add_action('admin_init', function () {
 
 			'sanitize_callback' => function ($value) use ($sanitize, $key) {
 				$current_value = (string) get_option($key, '');
-				$clear_secret = !empty($_POST['monime_clear_webhook_secret']);
 
 				$value = is_scalar($value)
 					? (string) $value
@@ -45,13 +44,6 @@ add_action('admin_init', function () {
 				$value = trim($value);
 
 				if ($value === '') {
-					if ($key === 'webhook_secret' && !$clear_secret) {
-						// Keep the existing secret when the field is left blank on save.
-						// This avoids wiping credentials from password-style inputs that do
-						// not round-trip their current value.
-						return $current_value;
-					}
-
 					delete_option($key);
 					return '';
 				}
@@ -129,14 +121,14 @@ function render_settings_page()
 
 					</div>
 
-						<!-- Webhook -->
-						<div class="section">
-							<h2>Webhook Security</h2>
-								<?php
-								$webhook_url = rest_url('monime/v1/webhook');
-								?>
+					<!-- Webhook -->
+					<div class="section">
+						<h2>Webhook Security</h2>
+						<?php
+						$webhook_url = rest_url('monime/v1/webhook');
+						?>
 
-							<div class="section">
+						<div class="section">
 
 							<div class="form-field">
 
@@ -165,11 +157,11 @@ function render_settings_page()
 						</div>
 						<div class="form-field">
 							<label>Webhook Secret</label>
-							<p class="description">Enter a secret once. Leave blank to keep the saved value.</p>
+							<p class="description">Leave blank to clear the saved secret.</p>
 
 							<input
-								type="password"
-								name="webhook_secret"
+								type="text
+								name=" webhook_secret"
 								value="<?php echo esc_attr($webhook_secret); ?>"
 								spellcheck="false"
 								autocomplete="off"
