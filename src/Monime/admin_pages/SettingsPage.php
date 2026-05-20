@@ -132,9 +132,15 @@ function render_settings_page()
 					<!-- Webhook -->
 					<div class="section">
 						<h2>Webhook Security</h2>
+<<<<<<< HEAD
 							<?php
 							$webhook_url = rest_url('monime/v1/webhook');
 							?>
+=======
+						<?php
+						$webhook_url = home_url('/monime/v1/webhook');
+						?>
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
 						<div class="section">
 

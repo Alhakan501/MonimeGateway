@@ -32,9 +32,16 @@ class GivewpAdapter
 				if (
 					!class_exists(\Give\Framework\PaymentGateways\PaymentGateway::class) ||
 					!class_exists(GiveMonimeGateway::class)
+<<<<<<< HEAD
 				) {
 					return;
 				}
+=======
+			) {
+				error_log('[Monime] GiveWP not ready or gateway missing');
+				return;
+			}
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
 			// ✅ CORRECT METHOD
 			$registrar->registerGateway(

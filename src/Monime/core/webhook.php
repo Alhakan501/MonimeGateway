@@ -50,6 +50,7 @@ class Webhook
 	{
 		$env = Env::get();
 
+<<<<<<< HEAD
 			$secret = trim($env['webhook_secret']);
 			$raw_payload = $request->get_body();
 
@@ -57,6 +58,18 @@ class Webhook
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Webhook secret not configured'
+=======
+		$secret = trim($env['webhook_secret']);
+		$raw_payload = $request->get_body();
+
+		if ($secret === '') {
+
+			error_log('[Monime Webhook] ⚠️ Webhook secret is not configured; skipping verification');
+
+			return new \WP_REST_Response([
+				'status' => 'ignored',
+				'message' => 'Webhook secret not configured'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 200);
 		}
 
@@ -64,10 +77,20 @@ class Webhook
 			$request->get_header('monime-signature')
 			?: ($_SERVER['HTTP_MONIME_SIGNATURE'] ?? '');
 
+<<<<<<< HEAD
 			if (empty($signature_header)) {
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Missing signature'
+=======
+		if (empty($signature_header)) {
+
+			error_log('[Monime Webhook] ❌ Missing signature header');
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Missing signature'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 401);
 		}
 		$timestamp = null;
@@ -87,20 +110,40 @@ class Webhook
 			}
 		}
 
+<<<<<<< HEAD
 			if (!$timestamp || !$signature) {
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Invalid signature format'
+=======
+		if (!$timestamp || !$signature) {
+
+			error_log('[Monime Webhook] ❌ Invalid signature format');
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Invalid signature format'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 401);
 		}
 
 		// Reject stale webhook attempts to reduce replay risk.
 		$now = time();
 
+<<<<<<< HEAD
 			if (abs($now - $timestamp) > 300) {
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Timestamp expired'
+=======
+		if (abs($now - $timestamp) > 300) {
+
+			error_log('[Monime Webhook] ❌ Timestamp expired');
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Timestamp expired'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 401);
 		}
 
@@ -116,16 +159,27 @@ class Webhook
 			)
 		);
 
+<<<<<<< HEAD
 			if (!hash_equals($expected_signature, $signature)) {
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Invalid signature'
+=======
+		if (!hash_equals($expected_signature, $signature)) {
+
+			error_log('[Monime Webhook] ❌ Signature mismatch');
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Invalid signature'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 401);
 		}
 
 		// Decode only after the signature has been validated.
 		$data = json_decode($raw_payload, true);
 
+<<<<<<< HEAD
 			if (json_last_error() !== JSON_ERROR_NONE) {
 				return new \WP_REST_Response([
 					'status' => 'error',
@@ -133,6 +187,19 @@ class Webhook
 				], 400);
 			}
 			return $data;
+=======
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			error_log('[Monime Webhook] ❌ JSON decode error');
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Invalid JSON'
+			], 400);
+		}
+
+		error_log('[Monime Webhook] Verified payload received');
+		return $data;
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 	}
 
 	/**
@@ -146,6 +213,7 @@ class Webhook
 			return $verification_result;
 		}
 
+<<<<<<< HEAD
 			$handler =
 				$verification_result['data']['metadata']['handler']
 				?? null;
@@ -154,16 +222,41 @@ class Webhook
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Missing handler'
+=======
+		$handler =
+			$verification_result['data']['metadata']['handler']
+			?? null;
+
+		if (!$handler) {
+
+			error_log('[Monime Webhook] ❌ Missing handler');
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Missing handler'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 400);
 		}
 
 		// Adapter IDs are written into Monime checkout metadata at session creation.
+<<<<<<< HEAD
 			$adapter = AdapterRegistry::get($handler);
 
 			if (!$adapter) {
 				return new \WP_REST_Response([
 					'status' => 'error',
 					'message' => 'Invalid Adapter'
+=======
+		$adapter = AdapterRegistry::get($handler);
+
+		if (!$adapter) {
+
+			error_log('[Monime Webhook] ❌ Adapter Not Found: ' . $handler);
+
+			return new \WP_REST_Response([
+				'status' => 'error',
+				'message' => 'Invalid Adapter'
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			], 400);
 		}
 
@@ -175,11 +268,19 @@ class Webhook
 			], 200);
 		}
 
+<<<<<<< HEAD
 			// The adapter performs the platform-specific order/donation update.
 			$adapter->handleWebhook($verification_result);
 
 			return new \WP_REST_Response([
 				'status' => 'success',
+=======
+		// The adapter performs the platform-specific order/donation update.
+		$adapter->handleWebhook($verification_result);
+
+		return new \WP_REST_Response([
+			'status' => 'success',
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			'message' => 'Webhook processed'
 		], 200);
 	}

@@ -42,6 +42,10 @@ foreach ($core_files as $file) {
 	if (file_exists($path)) {
 		require_once $path;
 	} else {
+<<<<<<< HEAD
+=======
+		error_log('Monime Gateway: Missing core file: ' . $file);
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 	}
 }
 
@@ -91,12 +95,23 @@ add_action('plugins_loaded', function () {
 			if (file_exists($path)) {
 				require_once $path;
 			} else {
+<<<<<<< HEAD
+=======
+				error_log('Monime missing GiveWP file: ' . $path);
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			}
 		}
 
 		GivewpAdapter::boot();
+<<<<<<< HEAD
 		} else {
 		}
+=======
+	} else {
+
+		error_log('GiveWP 4.x not loaded');
+	}
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
 	// WooCommerce Integration
 	if (class_exists('WooCommerce') || function_exists('WC')) {
@@ -121,7 +136,14 @@ add_action('plugins_loaded', function () {
 		AdapterService::boot();
 	}
 
+<<<<<<< HEAD
 		if (class_exists(Webhook::class)) {
 			Webhook::init();
 		}
 	});
+=======
+	if (class_exists(Webhook::class)) {
+		Webhook::init();
+	}
+});
+>>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
