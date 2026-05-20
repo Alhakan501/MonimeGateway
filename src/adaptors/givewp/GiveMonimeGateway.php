@@ -98,7 +98,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	public function handleWebhook(array $payload): void
 	{
 
-		error_log('webhook works.............');
+		//error_log('webhook works.............');
 		$status = $payload['data']['status'] ?? null;
 		$reference = $payload['data']['reference'] ?? null;
 
@@ -738,7 +738,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 				adaptorid: $this->getAdapterId(),
 				payload: $data
 			);
-			error_log(print_r($response, true));
+			//error_log(print_r($response, true));
 		} catch (\Throwable $e) {
 			throw new \Exception(
 				'Monime checkout initialization failed.'
@@ -831,7 +831,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 
 			// Never overwrite completed donations
 			if ($current_status !== 'publish') {
-				error_log('x.....not publish ==fail');
+				//error_log('x.....not publish ==fail');
 				give_update_payment_status(
 					$payment_id,
 					'failed',
@@ -874,7 +874,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	*/
 
 		if ($current_status !== 'publish') {
-			error_log('o..... publish ==success');
+			//error_log('o..... publish ==success');
 			give_update_payment_status(
 				$payment_id,
 				'publish',

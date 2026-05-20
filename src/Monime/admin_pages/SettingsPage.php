@@ -158,16 +158,16 @@ function render_settings_page()
 						<div class="form-field">
 							<label>Webhook Secret</label>
 							<p class="description">Leave blank to clear the saved secret.</p>
-
 							<input
-								type="text
-								name=" webhook_secret"
+								type="text"
+								name="webhook_secret"
 								value="<?php echo esc_attr($webhook_secret); ?>"
 								spellcheck="false"
 								autocomplete="off"
 								autocorrect="off"
 								autocapitalize="off"
 								data-lpignore="true">
+
 						</div>
 					</div>
 
