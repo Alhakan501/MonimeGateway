@@ -121,17 +121,13 @@ class WcMonimeGateway extends WC_Payment_Gateway implements PaymentAdapterInterf
 				? $data['paymentOptions']
 				: [],
 
-			metadata: is_array($data['metadata'] ?? null)
-				? $data['metadata']
-				: [],
-		);
-<<<<<<< HEAD
-	}	// Handle checkout completed webhook
-=======
+				metadata: is_array($data['metadata'] ?? null)
+					? $data['metadata']
+					: [],
+			);
 		}	// Handle checkout completed webhook
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
-	// Handle checkout completed webhook
+		// Handle checkout completed webhook
 	/**
 	 * Process a verified Monime checkout_session.completed webhook.
 	 */
@@ -357,10 +353,6 @@ class WcMonimeGateway extends WC_Payment_Gateway implements PaymentAdapterInterf
 	public function handleWebhook(array $payload): void
 	{
 		$event_type = $payload['event']['name'] ?? '';
-<<<<<<< HEAD
-=======
-
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 		if (empty($event_type)) {
 
 			$this->monime_log(
@@ -816,43 +808,20 @@ class WcMonimeGateway extends WC_Payment_Gateway implements PaymentAdapterInterf
 
 		$map = array();
 
-<<<<<<< HEAD
-		foreach ($channels as $channel => $subdir) {
+				foreach ($channels as $channel => $subdir) {
 
-			// Each channel has its own icon folder under assets/icons.
-				$full_path = trailingslashit($base_path . $subdir);
+					// Each channel has its own icon folder under assets/icons.
+					$full_path = trailingslashit($base_path . $subdir);
 
-				if (!is_dir($full_path)) {
-					continue;
-				}
+					if (!is_dir($full_path)) {
+						continue;
+					}
 
-			$files = glob($full_path . '*.svg');
+					$files = glob($full_path . '*.svg');
 
-				foreach ($files as $file) {
-=======
-			foreach ($channels as $channel => $subdir) {
+					foreach ($files as $file) {
 
-				// Each channel has its own icon folder under assets/icons.
-				$full_path = trailingslashit($base_path . $subdir);
-
-				if (!is_dir($full_path)) {
-				error_log('Icon directory not found: ' . $full_path);
-				continue;
-			}
-
-			$files = glob($full_path . '*.svg');
-
-			error_log(
-				"Channel '{$channel}' → Found " .
-					count($files) .
-					' icons in: ' .
-					$full_path
-			);
-
-			foreach ($files as $file) {
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-
-				$id = strtolower(pathinfo($file, PATHINFO_FILENAME));
+					$id = strtolower(pathinfo($file, PATHINFO_FILENAME));
 
 				$map[$channel][$id] = array(
 					'id'    => $id,

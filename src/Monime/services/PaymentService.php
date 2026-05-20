@@ -35,15 +35,8 @@ class PaymentService
 			$env['monime_token'],
 			$env['monime_space_id']
 		);
-<<<<<<< HEAD
 		// Pass the adapter ID so Monime webhooks can be routed back correctly.
 		$response = $client->create_checkout_session(donationrequest: $data, _handler: $adaptorid);
-=======
-		error_log(print_r($data, true));
-		// Pass the adapter ID so Monime webhooks can be routed back correctly.
-		$response = $client->create_checkout_session(donationrequest: $data, _handler: $adaptorid);
-		//error_log($response);
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 		return $response;
 	}
 }

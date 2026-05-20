@@ -133,20 +133,10 @@ class MonimeClient
 		}
 
 		$result = $parsed['result'] ?? $parsed;
-		$redirectUrl = $result['redirectUrl'] ?? null;
-
-<<<<<<< HEAD
-			// A checkout session is unusable without the hosted checkout URL.
-			if (empty($redirectUrl)) {
-				throw new \RuntimeException('Invalid Redirect Url. Response: ' . json_encode($parsed));
-			}
-=======
 		// A checkout session is unusable without the hosted checkout URL.
 		if (empty($redirectUrl)) {
-			error_log("⚠️ redirectUrl missing. Full response: " . json_encode($parsed));
 			throw new \RuntimeException('Invalid Redirect Url. Response: ' . json_encode($parsed));
 		}
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
 		return $result;
 	}

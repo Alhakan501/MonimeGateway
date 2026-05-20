@@ -101,10 +101,6 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 		$reference = $payload['data']['reference'] ?? null;
 
 		if (!$status || !$reference) {
-<<<<<<< HEAD
-=======
-			error_log('[Monime Webhook] ❌ Missing status or reference');
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			return;
 		}
 
@@ -116,10 +112,6 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 		]);
 
 		if (empty($payments)) {
-<<<<<<< HEAD
-=======
-			error_log('[Monime Webhook] ❌ Payment not found for reference: ' . $reference);
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 			return;
 		}
 
@@ -134,25 +126,13 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 
 			case 'cancelled':
 				give_update_payment_status($payment_id, 'failed');
-<<<<<<< HEAD
-
-=======
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 				break;
 
 			case 'expired':
 				give_update_payment_status($payment_id, 'abandoned');
-<<<<<<< HEAD
-
 				break;
 
 			default:
-=======
-				break;
-
-			default:
-				error_log('[Monime] Unknown status: ' . $status);
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 				break;
 		}
 
@@ -757,10 +737,8 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 		if (give_get_option('monime_financial_account')) {
 			$data['financialAccountId'] = give_get_option('monime_financial_account');
 		}
-		$data['paymentOptions'] = self::getPaymentOptionsPayload();
-		try {
-
-<<<<<<< HEAD
+			$data['paymentOptions'] = self::getPaymentOptionsPayload();
+			try {
 				$response = PaymentService::create(
 					adaptorid: $this->getAdapterId(),
 					payload: $data
@@ -769,38 +747,13 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 				throw new \Exception(
 					'Monime checkout initialization failed.'
 				);
-=======
-			$response = PaymentService::create(
-				adaptorid: $this->getAdapterId(),
-				payload: $data
-			);
-
-			error_log(
-				'[Monime Response] ' .
-					wp_json_encode($response)
-			);
-		} catch (\Throwable $e) {
-
-			error_log(
-				'[Monime Error] ' .
-					$e->getMessage()
-			);
-
-			throw new \Exception(
-				'Monime checkout initialization failed.'
-			);
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-		}		// Store local identifiers before sending the donor offsite.
-		$donation->gatewayTransactionId = $reference;
-		$donation->save();
-		update_post_meta($donation->id, '_monime_reference', $reference);
-		update_post_meta($donation->id, '_monime_redirect_url', $response['redirectUrl']);
-<<<<<<< HEAD
-=======
-		error_log('[Monime CreatePayment] ' . wp_json_encode($response));
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-		return new RedirectOffsite($response['redirectUrl']);
-	}
+			}		// Store local identifiers before sending the donor offsite.
+			$donation->gatewayTransactionId = $reference;
+			$donation->save();
+			update_post_meta($donation->id, '_monime_reference', $reference);
+			update_post_meta($donation->id, '_monime_redirect_url', $response['redirectUrl']);
+			return new RedirectOffsite($response['redirectUrl']);
+		}
 
 
 
@@ -811,15 +764,7 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	 */
 	protected function handleCreatePaymentRedirect(array $queryParams)
 	{
-<<<<<<< HEAD
-=======
-		error_log(
-			'[Monime Redirect] ' .
-				wp_json_encode($queryParams)
-		);
-
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-		/*
+			/*
 	|--------------------------------------------------------------------------
 	| Compact Query Params
 	|--------------------------------------------------------------------------
@@ -850,19 +795,11 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 	|--------------------------------------------------------------------------
 	*/
 
-		if (empty($reference)) {
-<<<<<<< HEAD
-=======
-
-			error_log(
-				'[Monime Redirect] Missing reference'
-			);
-
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-			return new RedirectResponse(
-				$failedUrl
-			);
-		}
+			if (empty($reference)) {
+				return new RedirectResponse(
+					$failedUrl
+				);
+			}
 
 		/*
 	|--------------------------------------------------------------------------
@@ -876,38 +813,19 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 			'number'     => 1,
 		]);
 
-		if (empty($payments)) {
-<<<<<<< HEAD
-=======
-
-			error_log(
-				'[Monime Redirect] Donation not found for reference: ' .
-					$reference
-			);
-
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-			return new RedirectResponse(
-				$failedUrl
-			);
-		}
+			if (empty($payments)) {
+				return new RedirectResponse(
+					$failedUrl
+				);
+			}
 
 		$payment_id = (int) $payments[0]->ID;
 
-		$current_status = give_get_payment_status(
-			$payment_id
-		);
+			$current_status = give_get_payment_status(
+				$payment_id
+			);
 
-<<<<<<< HEAD
-=======
-		error_log(
-			'[Monime Redirect] Payment #' .
-				$payment_id .
-				' current status: ' .
-				$current_status
-		);
-
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
-		/*
+			/*
 	|--------------------------------------------------------------------------
 	| Cancelled / Failed
 	|--------------------------------------------------------------------------
@@ -936,31 +854,17 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 					'cancelled'
 				);
 
-				give_update_payment_meta(
-					$payment_id,
-					'_monime_cancelled_at',
-					current_time('mysql')
-				);
+					give_update_payment_meta(
+						$payment_id,
+						'_monime_cancelled_at',
+						current_time('mysql')
+					);
 
-<<<<<<< HEAD
 					give_insert_payment_note(
 						$payment_id,
 						'Monime checkout cancelled by donor.'
 					);
 				}
-=======
-				give_insert_payment_note(
-					$payment_id,
-					'Monime checkout cancelled by donor.'
-				);
-
-				error_log(
-					'[Monime Redirect] Payment #' .
-						$payment_id .
-						' marked as failed'
-				);
-			}
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
 			return new RedirectResponse(
 				$failedUrl
@@ -993,31 +897,17 @@ class GiveMonimeGateway extends PaymentGateway implements PaymentAdapterInterfac
 				'completed'
 			);
 
-			give_update_payment_meta(
-				$payment_id,
-				'_monime_completed_at',
-				current_time('mysql')
-			);
+				give_update_payment_meta(
+					$payment_id,
+					'_monime_completed_at',
+					current_time('mysql')
+				);
 
-<<<<<<< HEAD
 				give_insert_payment_note(
 					$payment_id,
 					'Monime redirect marked donation as completed.'
 				);
 			}
-=======
-			give_insert_payment_note(
-				$payment_id,
-				'Monime redirect marked donation as completed.'
-			);
-
-			error_log(
-				'[Monime Redirect] Payment #' .
-					$payment_id .
-					' marked as completed'
-			);
-		}
->>>>>>> 81d537cdd291be62e2ee9205a06e72c1809819a0
 
 		return new RedirectResponse(
 			$successUrl
