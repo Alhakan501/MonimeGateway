@@ -1,17 +1,23 @@
 <?php
 
+/**
+ * Plugin Name:       Monime Gateway
+ * Description:       Monime Payment Gateway Plugin
+ * Version:           1.0.1
+ * Author:            Monime
+ * Author URI:        https://monime.io/
+ * Text Domain:       monime-gateway
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
+ * WC requires at least: 7.0
+ * WC tested up to:   10.0
+ */
+
 declare(strict_types=1);
 
 use Adaptors\Givewp\GivewpAdapter;
 use Monime\core\Webhook;
 use Monime\services\AdapterService;
-
-/**
- * Plugin Name:       Monime Gateway
- * Description:       Monime Payment Gateway Plugin
- * Version:           1.0.1
- * Text Domain:       monime-gateway
- */
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
@@ -68,7 +74,24 @@ add_action('admin_menu', function () {
 		56
 	);
 });
+add_filter(
+	'plugin_action_links_' . plugin_basename(__FILE__),
+	'monime_gateway_plugin_action_links'
+);
 
+function monime_gateway_plugin_action_links($links)
+{
+
+	$settings_link = sprintf(
+		'<a href="%s">%s</a>',
+		admin_url('admin.php?page=monime-settings'),
+		__('Settings', 'monime-gateway')
+	);
+
+	array_unshift($links, $settings_link);
+
+	return $links;
+}
 /*
 |--------------------------------------------------------------------------
 | Platform Integrations
